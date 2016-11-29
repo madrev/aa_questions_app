@@ -16,19 +16,19 @@ class QuestionsDatabase < SQLite3::Database
   end
 end
 
-# class ModelBase
-#
-#   def self.find_by_id(table, id)
-#     QuestionsDatabase.instance.execute(<<-SQL, table, id)
-#       SELECT
-#         *
-#       FROM
-#         #{table}
-#       WHERE
-#         id = ?
-#     SQL
-#   end
-#
-#   def self.all
-#   end
-# end
+class ModelBase
+
+  def self.find_by_id(table, id)
+    QuestionsDatabase.instance.execute(<<-SQL, table, id)
+      SELECT
+        *
+      FROM
+        #{table}
+      WHERE
+        id = ?
+    SQL
+  end
+
+  def self.all
+  end
+end
