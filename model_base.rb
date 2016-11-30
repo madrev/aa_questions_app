@@ -70,6 +70,29 @@ class ModelBase
     selection.map {|datum| self.new(datum)}
   end
 
+  def self.method_missing(method_name, *args)
+    method_name = method_name.to_s
+
+    if method_name.start_with?("find_by_")
+      text = method_name[("find_by_".length)..-1]
+      column_names = text.split("_and_")
+
+      options = Hash.new
+
+      column_names.length.times do |i|
+        options[column_names[i]] = args[i]
+      end
+
+      self.where(options)
+
+    else
+      super
+    end
+  end
+
+
+
+
   private
 
   def self.get_where_string(options)
