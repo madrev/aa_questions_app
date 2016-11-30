@@ -96,6 +96,7 @@ class ModelBase
   private
 
   def self.get_where_string(options)
+    return options if options.is_a?(String)
     result = []
     options.each do |k,v|
       result << (v.is_a?(String) ? "#{k} = '#{v}'" : "#{k} = #{v}")
