@@ -6,7 +6,7 @@ class ModelBase
     'QuestionFollow' => 'question_follows',
     'QuestionLike' => 'question_likes',
     'Reply' => 'replies'
-  }
+  }.freeze
 
   def self.find_by_id(id)
     selection = QuestionsDatabase.instance.execute(<<-SQL, id)
@@ -28,7 +28,7 @@ class ModelBase
       FROM
         #{TABLE_NAMES[self.to_s]}
     SQL
-    selection.map {|datum| self.new(datum)}
+    selection.map { |datum| self.new(datum) }
   end
 
   def save
@@ -55,6 +55,29 @@ class ModelBase
       WHERE
         id = ?
     SQL
+  end
+
+  def self.where(options)
+    selection = QuestionsDatabase.instance.execute(<<-SQL)
+      SELECT
+        *
+      FROM
+        #{TABLE_NAMES[self.to_s]}
+      WHERE
+        #{self.get_where_string(options)}
+    SQL
+
+    selection.map {|datum| self.new(datum)}
+  end
+
+  private
+
+  def self.get_where_string(options)
+    result = []
+    options.each do |k,v|
+      result << (v.is_a?(String) ? "#{k} = '#{v}'" : "#{k} = #{v}")
+    end
+    result.join(" AND ")
   end
 
   def instance_values_array
