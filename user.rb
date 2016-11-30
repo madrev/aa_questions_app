@@ -1,20 +1,7 @@
-require_relative 'questions_db'
+#require_relative 'questions_db'
 
-class User
+class User < ModelBase
   attr_accessor :fname, :lname
-
-  def self.find_by_id(id)
-    selection = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        users
-      WHERE
-        id = ?
-    SQL
-
-    User.new(selection.first)
-  end
 
   def self.find_by_name(fname, lname)
     selection = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
@@ -33,28 +20,6 @@ class User
     @id = options['id']
     @fname = options['fname']
     @lname = options['lname']
-  end
-
-  def save
-    if @id.nil?
-      QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
-        INSERT INTO
-          users(fname, lname)
-        VALUES
-          (?,?)
-      SQL
-      @id = QuestionsDatabase.instance.last_insert_row_id
-    else
-      QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
-        UPDATE
-          users
-        SET
-          fname = ?, lname = ?
-        WHERE
-          id = ?
-      SQL
-    end
-    self
   end
 
   def authored_questions

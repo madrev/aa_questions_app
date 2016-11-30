@@ -1,20 +1,7 @@
-require_relative 'questions_db'
+#require_relative 'questions_db'
 
-class Question
+class Question < ModelBase
   attr_accessor :title, :body, :user_id
-
-  def self.find_by_id(id)
-    selection = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        questions
-      WHERE
-        id = ?
-    SQL
-
-    Question.new(selection.first)
-  end
 
   def self.find_by_author_id(user_id)
     selection = QuestionsDatabase.instance.execute(<<-SQL, user_id)
@@ -42,28 +29,6 @@ class Question
     @title = options['title']
     @body = options['body']
     @user_id = options['user_id']
-  end
-
-  def save
-    if @id.nil?
-      QuestionsDatabase.instance.execute(<<-SQL, @title, @body, @user_id)
-        INSERT INTO
-          questions(title, body, user_id)
-        VALUES
-          (?, ?, ?)
-      SQL
-      @id = QuestionsDatabase.instance.last_insert_row_id
-    else
-      QuestionsDatabase.instance.execute(<<-SQL, @title, @body, @user_id, @id)
-        UPDATE
-          questions
-        SET
-          title = ?, body = ?, user_id = ?
-        WHERE
-          id = ?
-      SQL
-    end
-    self
   end
 
   def author

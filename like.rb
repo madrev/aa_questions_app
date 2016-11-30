@@ -1,20 +1,7 @@
-require_relative 'questions_db'
+#require_relative 'questions_db'
 
-class QuestionLike
+class QuestionLike < ModelBase
   attr_accessor :question_id, :user_id
-
-  def self.find_by_id(id)
-    selection = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        question_likes
-      WHERE
-        id = ?
-    SQL
-
-    QuestionLike.new(selection.first)
-  end
 
   def self.likers_for_question_id(question_id)
     selection = QuestionsDatabase.instance.execute(<<-SQL, question_id)

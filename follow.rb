@@ -1,20 +1,7 @@
-require_relative 'questions_db'
+#require_relative 'questions_db'
 
-class QuestionFollow
+class QuestionFollow < ModelBase
   attr_accessor :question_id, :user_id
-
-  def self.find_by_id(id)
-    selection = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        question_follows
-      WHERE
-        id = ?
-    SQL
-
-    QuestionFollow.new(selection.first)
-  end
 
   def initialize(options)
     @id = options['id']
